@@ -7,7 +7,7 @@ url = 'http://instagram.com'
 user = '/wachmacher/'
 imagefile = 'temp.jpg'
 
-driver = webdriver.PhantomJS()
+driver = webdriver.PhantomJS(service_log_path=os.path.devnull)
 driver.set_window_size(1120, 550)
 driver.get(url+user)
 
