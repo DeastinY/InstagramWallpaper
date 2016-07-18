@@ -24,9 +24,19 @@ for i in soup.findAll('img'):
         break
 urllib.request.urlretrieve(img.get('src'), imagefile)
 
+absimg = os.path.abspath(imagefile)
+
 if os.name == 'nt':
     import ctypes
     SPI_SETDESKWALLPAPER = 20
-    ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, os.path.abspath(imagefile) , 0)
+    ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, absimg , 0)
+elif os.name == 'posix':
+    import subprocess
+    status = subprocess.Popen("DISPLAY=:0 GSETTINGS_BACKEND=dconf "
+             "/usr/bin/gsettings set org.gnome.desktop.background "
+             "picture-uri file://"+absimg, shell=True)
+    status.wait()
+    if status.returncode != 0:
+        print("Could not set desktop :( Probably your desktop environment is not supported.")
 
 #os.remove(imagefile)
